@@ -1,0 +1,17 @@
+# AI Resume Analyzer
+
+Production-grade Resume Analyzer built with:
+
+- Python
+- Streamlit
+- Scikit-Learn
+- NLP
+- Gemini API
+
+## Features
+
+- ATS Scoring
+- Resume Parsing
+- Skill Extraction
+- Job Description Matching
+- AI Feedback
