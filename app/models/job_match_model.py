@@ -12,4 +12,16 @@ class JobMatchReport:
         default_factory=list
     )
 
+    high_priority_skills: list[str] = field(
+        default_factory=list
+    )
+
+    medium_priority_skills: list[str] = field(
+        default_factory=list
+    )
+
+    low_priority_skills: list[str] = field(
+        default_factory=list
+    )
+
     match_percentage: float = 0.0

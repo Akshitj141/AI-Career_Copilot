@@ -60,8 +60,21 @@ class JDService:
                 2
             )
 
+        high_priority_skills = missing_skills[:3]
+
+        medium_priority_skills = (
+            missing_skills[3:6]
+        )
+
+        low_priority_skills = (
+            missing_skills[6:]
+        )
+
         return JobMatchReport(
             matched_skills=matched_skills,
             missing_skills=missing_skills,
+            high_priority_skills=high_priority_skills,
+            medium_priority_skills=medium_priority_skills,
+            low_priority_skills=low_priority_skills,
             match_percentage=match_percentage
         )
