@@ -5,6 +5,11 @@ from app.services.parser_service import ParserService
 from app.services.skill_service import SkillService
 from app.services.jd_service import JDService
 
+from app.services.gemini_service import GeminiService
+from app.services.roadmap_service import RoadmapService
+from app.services.interview_service import InterviewService
+from app.services.application_service import ApplicationService
+
 
 st.set_page_config(
     page_title="AI Career Copilot",
@@ -25,6 +30,11 @@ if uploaded_file:
     parser_service = ParserService()
     skill_service = SkillService()
     jd_service = JDService()
+
+    gemini_service = GeminiService()
+    roadmap_service = RoadmapService()
+    interview_service = InterviewService()
+    application_service = ApplicationService()
 
     result = pdf_service.extract_text(
         uploaded_file
@@ -49,6 +59,8 @@ if uploaded_file:
             resume_text
         )
     )
+
+    report = None
 
     st.success(
         "Resume Processed Successfully"
@@ -190,3 +202,93 @@ if uploaded_file:
         st.write(
             report.high_priority_skills
         )
+
+    st.divider()
+
+    st.subheader(
+        "🧠 AI Career Coach"
+    )
+
+    if st.button(
+        "Generate Career Insights"
+    ):
+
+        insights = (
+            gemini_service
+            .generate_career_insights(
+                resume_text,
+                jd_text if jd_text else ""
+            )
+        )
+
+        st.write(insights)
+
+    st.divider()
+
+    st.subheader(
+        "🗺 Learning Roadmap"
+    )
+
+    target_role = st.text_input(
+        "Target Role"
+    )
+
+    if st.button(
+        "Generate Roadmap"
+    ):
+
+        roadmap = (
+            roadmap_service
+            .generate_roadmap(
+                target_role,
+                skills,
+                []
+            )
+        )
+
+        st.write(roadmap)
+
+    st.divider()
+
+    st.subheader(
+        "🎤 Interview Preparation"
+    )
+
+    if st.button(
+        "Generate Interview Questions"
+    ):
+
+        questions = (
+            interview_service
+            .generate_questions(
+                resume_text,
+                jd_text
+            )
+        )
+
+        st.write(questions)
+
+    st.divider()
+
+    st.subheader(
+        "📨 Application Assistant"
+    )
+
+    company_name = st.text_input(
+        "Company Name"
+    )
+
+    if st.button(
+        "Generate Application Assets"
+    ):
+
+        assets = (
+            application_service
+            .generate_application_assets(
+                resume_text,
+                jd_text,
+                company_name
+            )
+        )
+
+        st.write(assets)
