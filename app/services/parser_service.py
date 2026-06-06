@@ -7,7 +7,7 @@ from app.utils.regex_patterns import (
     LINKEDIN_PATTERN,
     GITHUB_PATTERN
 )
-
+from app.utils.section_headers import SECTION_HEADERS
 
 class ParserService:
 
@@ -27,3 +27,18 @@ class ParserService:
             linkedin=linkedin_match.group(0) if linkedin_match else "",
             github=github_match.group(0) if github_match else "",
         )
+    def identify_sections(self, text: str):
+
+        sections = {}
+
+        text_lower = text.lower()
+
+        for section_name, headers in SECTION_HEADERS.items():
+
+            for header in headers:
+
+                if header in text_lower:
+                    sections[section_name] = True
+                    break
+
+        return sections 
