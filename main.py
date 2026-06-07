@@ -9,6 +9,7 @@ from app.services.gemini_service import GeminiService
 from app.services.roadmap_service import RoadmapService
 from app.services.interview_service import InterviewService
 from app.services.application_service import ApplicationService
+from app.services.scoring_service import ScoringService
 
 
 st.set_page_config(
@@ -35,6 +36,7 @@ if uploaded_file:
     roadmap_service = RoadmapService()
     interview_service = InterviewService()
     application_service = ApplicationService()
+    scoring_service = ScoringService()
 
     result = pdf_service.extract_text(
         uploaded_file
@@ -57,6 +59,14 @@ if uploaded_file:
     skills = (
         skill_service.extract_skills(
             resume_text
+        )
+    )
+
+    score_report = (
+        scoring_service.calculate_scores(
+            contact_info,
+            sections,
+            skills
         )
     )
 
@@ -149,6 +159,68 @@ if uploaded_file:
     st.divider()
 
     st.subheader(
+        "📊 ATS Dashboard"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.metric(
+            "ATS Score",
+            f"{score_report.ats_score}/100"
+        )
+
+    with col2:
+
+        st.metric(
+            "Career Readiness Score",
+            f"{score_report.career_readiness_score}/100"
+        )
+
+    st.subheader(
+        "📈 Score Breakdown"
+    )
+
+    st.write(
+        f"Resume Quality Score: {score_report.resume_quality_score}"
+    )
+
+    st.write(
+        f"Skill Score: {score_report.skill_score}"
+    )
+
+    st.write(
+        f"Project Score: {score_report.project_score}"
+    )
+
+    st.write(
+        f"Experience Score: {score_report.experience_score}"
+    )
+
+    st.subheader(
+        "💡 Recommendations"
+    )
+
+    if score_report.recommendations:
+
+        for recommendation in (
+            score_report.recommendations
+        ):
+
+            st.warning(
+                recommendation
+            )
+
+    else:
+
+        st.success(
+            "Strong Resume Structure"
+        )
+
+    st.divider()
+
+    st.subheader(
         "🎯 Job Description Matching"
     )
 
@@ -168,9 +240,23 @@ if uploaded_file:
             )
         )
 
+        score_report = (
+            scoring_service.calculate_scores(
+                contact_info,
+                sections,
+                skills,
+                report.match_percentage
+            )
+        )
+
         st.metric(
             "Match Percentage",
             f"{report.match_percentage}%"
+        )
+
+        st.metric(
+            "Career Readiness Score",
+            f"{score_report.career_readiness_score}/100"
         )
 
         col1, col2 = st.columns(2)
