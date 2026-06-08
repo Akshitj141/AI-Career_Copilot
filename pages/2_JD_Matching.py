@@ -8,6 +8,10 @@ from app.services.scoring_service import (
     ScoringService
 )
 
+from app.services.semantic_matching_service import (
+    SemanticMatchingService
+)
+
 st.title("🎯 Job Description Matching")
 
 if "resume_text" not in st.session_state:
@@ -38,6 +42,10 @@ jd_service = JDService()
 
 scoring_service = ScoringService()
 
+semantic_service = (
+    SemanticMatchingService()
+)
+
 jd_text = st.text_area(
     "Paste Job Description",
     height=250
@@ -54,32 +62,53 @@ if st.button(
         )
     )
 
+    semantic_report = (
+        semantic_service
+        .calculate_similarity(
+            resume_text,
+            jd_text,
+            report.match_percentage
+        )
+    )
+
     score_report = (
         scoring_service.calculate_scores(
             contact_info,
             sections,
             skills,
-            report.match_percentage
+            semantic_report.overall_match_score
         )
     )
 
     st.divider()
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
 
         st.metric(
-            "Job Match Score",
+            "Keyword Match",
             f"{report.match_percentage}%"
         )
 
     with col2:
 
         st.metric(
-            "Career Readiness Score",
-            f"{score_report.career_readiness_score}/100"
+            "Semantic Match",
+            f"{semantic_report.semantic_match_score}%"
         )
+
+    with col3:
+
+        st.metric(
+            "Overall Match",
+            f"{semantic_report.overall_match_score}%"
+        )
+
+    st.metric(
+        "Career Readiness Score",
+        f"{score_report.career_readiness_score}/100"
+    )
 
     st.divider()
 
